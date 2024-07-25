@@ -24,7 +24,7 @@ module.exports = {
         semi: true,
         tabWidth: 2,
         trailingComma: 'all',
-        printWidth: 100,
+
         bracketSpacing: true,
         arrowParens: 'avoid',
         endOfLine: 'auto', // 한줄 추가

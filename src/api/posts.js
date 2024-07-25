@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const posts = [
   { id: 1, title: '제목1', content: '내용1', createdAt: '2024-07-19' },
   { id: 2, title: '제목2', content: '내용2', createdAt: '2024-07-20' },
@@ -9,10 +11,18 @@ const posts = [
 ];
 
 export function getPosts() {
-  return posts;
+  return axios.get('http://localhost:7000/posts');
 }
 
 export function getPostById(id) {
-  // eslint-disable-next-line prettier/prettier
-  return posts.find((item) => item.id === id);
+  return axios.get(`http://localhost:7000/posts/${id}`);
+}
+export function createPost(data) {
+  return axios.post('http://localhost:7000/posts', data);
+}
+export function updatePost(id, data) {
+  return axios.put(`http://localhost:7000/posts/${id}`, data);
+}
+export function deletePost(id) {
+  return axios.delete(`http://localhost:7000/posts/${id}`);
 }
