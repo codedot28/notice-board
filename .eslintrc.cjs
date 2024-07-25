@@ -16,6 +16,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'no-extra-parens': ['error', 'all'],
     'prettier/prettier': [
       'error',
       {
