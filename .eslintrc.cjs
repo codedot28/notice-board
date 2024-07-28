@@ -3,11 +3,7 @@ require('@rushstack/eslint-patch/modern-module-resolution');
 
 module.exports = {
   root: true,
-  extends: [
-    'plugin:vue/vue3-essential',
-    'eslint:recommended',
-    '@vue/eslint-config-prettier/skip-formatting',
-  ],
+  extends: ['plugin:vue/vue3-essential', 'eslint:recommended', '@vue/eslint-config-prettier/skip-formatting'],
   env: {
     'vue/setup-compiler-macros': true,
   },
@@ -24,7 +20,7 @@ module.exports = {
         semi: true,
         tabWidth: 2,
         trailingComma: 'all',
-
+        printWidth: 200,
         bracketSpacing: true,
         arrowParens: 'avoid',
         endOfLine: 'auto', // 한줄 추가

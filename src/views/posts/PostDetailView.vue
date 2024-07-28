@@ -36,9 +36,11 @@ const props = defineProps({
 });
 
 const router = useRouter();
-// const route = useRoute();
-// const id = route.params.id;
-const post = ref({});
+const post = ref({
+  title: null,
+  content: null,
+  createdAt: null,
+});
 
 const fetchPost = async () => {
   try {
