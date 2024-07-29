@@ -1,21 +1,24 @@
 <template>
-  <div>
+  <AppLoading v-if="loading" />
+
+  <AppError v-else-if="error" :message="error.message" />
+
+  <div v-else>
     <h2>게시글 수정</h2>
     <hr class="my-4" />
-    <form @submit.prevent="edit">
-      <div class="mb-3">
-        <label for="title" class="form-label">제목</label>
-        <input v-model="form.title" type="text" class="form-control" id="title" />
-      </div>
-      <div class="mb-3">
-        <label for="content" class="form-label">내용</label>
-        <textarea v-model="form.content" class="form-control" id="content" rows="3"></textarea>
-      </div>
-      <div class="pt-4">
-        <button type="button" class="btn btn-outline-danger me-2" @click="goDetail">취소</button>
-        <button class="btn btn-primary">수정</button>
-      </div>
-    </form>
+    <AppError v-if="editError" :message="editError.message" />
+    <PostForm v-model:title="form.title" v-model:content="form.content" @submit.prevent="edit">
+      <template #actions>
+        <button type="button" class="btn btn-outline-danger" @click="goDetailPage">취소</button>
+        <button class="btn btn-primary" :disabled="editLoading">
+          <template v-if="editLoading">
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading...</span>
+          </template>
+          <template v-else>수정</template>
+        </button>
+      </template>
+    </PostForm>
   </div>
 </template>
 
@@ -23,22 +26,31 @@
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getPostById, updatePost } from '@/api/posts';
+import PostForm from '@/components/posts/PostForm.vue';
+import { useAlert } from '@/composables/alert.js';
 
 const router = useRouter();
 const route = useRoute();
 const id = route.params.id;
+const { vAlert, vSuccess } = useAlert();
 
 const form = ref({
   title: null,
   content: null,
 });
 
+const error = ref(null);
+const loading = ref(false);
+
 const fetchPost = async () => {
   try {
+    loading.value = true;
     const { data } = await getPostById(id);
     setForm(data);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    error.value = err;
+  } finally {
+    loading.value = false;
   }
 };
 const setForm = ({ title, content }) => {
@@ -47,16 +59,23 @@ const setForm = ({ title, content }) => {
 };
 fetchPost();
 
+const editError = ref(null);
+const editLoading = ref(false);
 const edit = async () => {
   try {
+    editLoading.value = true;
     await updatePost(id, { ...form.value });
     router.push({ name: 'PostDetail', params: { id } });
-  } catch (error) {
-    console.error(error);
+    vSuccess('수정이 완료되었습니다!');
+  } catch (err) {
+    vAlert(err.message);
+    editError.value = err;
+  } finally {
+    editLoading.value = false;
   }
 };
 
-const goDetail = () => {
+const goDetailPage = () => {
   router.push({
     name: 'PostDetail',
     params: { id },
